@@ -1,25 +1,25 @@
-# cipher-js
+# symmetric-cipher.js
 This is a lightweight library meant for symmetric encryption and decryption of strings. It is written for express-js to add support for encrypted cookies, but will also work with Node.js.
 
 This library currently only allows users to use 'AES-256-CBC' symmetric algorithm. On encryption, a random IV is computed and prepended to the ciphertext with `:` as the separator. This library uses the in-built Node.js `crypto` library under the hood.
 
-256-bit (32-byte keys are required for encryption or decryption). To avoid imposing strict requirements, this library automatically generates a sha256 hash of the key if it is not the required length. However, it is not recommended to use short keys like 'super secret key', though they will still work.
+256-bit (32-byte) keys are required for encryption or decryption. To avoid imposing strict requirements, this library automatically generates a sha256 hash of the key if it is not the required length. However, it is not recommended to use short keys like 'super secret key', though they will still work.
 
 See the Security section for tips on generating keys.
 
 ## Installation
 NPM
 ```bash
-npm install cipher-js
+npm install symmetric-cipher.js
 ```
 Yarn
 ```bash
-yarn add cipher-js
+yarn add symmetric-cipher.js
 ```
 
 ## Usage
 ```javascript
-var cipher = require('cipher-js');
+var cipher = require('symmetric-cipher.js');
 
 // Encrypt
 cipher.encrypt('my value', 'super secret key');
@@ -32,7 +32,7 @@ cipher.decrypt('ciphertext', 'super secret key');
 
 ES Modules
 ```javascript
-import { encrypt, decrypt } from 'cipher-js';
+import { encrypt, decrypt } from 'symmetric-cipher.js';
 
 // Encrypt
 encrypt('foobar', 'super secret key');
@@ -79,14 +79,14 @@ Expected input is in the format {32-character-iv}:{ciphertext}
 
 - `cipherText` (string) The cipher to decrypt
 - `key`: (string | Buffer) The secret used for encryption or decryption. If it is a string, it is converted from the specified encoding to binary.
-- `keyEncoding` (string) The encoding of the key. Default is `utf8`. Others include `base64`, `hex`, `ascii`. For full details see crypto's BufferEncoding.
+- `keyEncoding` (string) The encoding of the key. Default is 'utf8'. Others include 'base64', 'hex', 'ascii'. For full details see crypto's BufferEncoding.
 
 Output is the original plaintext.
 
 ## Examples
 Hex key
 ```javascript
-var cipher = require('cipher-js');
+var cipher = require('symmetric-cipher.js');
 
 cipher.encrypt('foobar', '3fac1504251a027465981346fb5b0d57d398e4df4a03253a4c7d1926e40e9907', 'hex')
 
@@ -95,7 +95,7 @@ cipher.decrypt('cf20922dd618009f4ee9172ac746701f:c7e37061e6486e3f574aae8f110e883
 
 Base64 key
 ```javascript
-var cipher = require('cipher-js');
+var cipher = require('symmetric-cipher.js');
 
 cipher.encrypt('foobar', 'ktFZQO5JDd4wjwPB2U6bawZKUTGbgOfw6up0wFtjsVk=', 'base64')
 
@@ -104,7 +104,7 @@ cipher.decrypt('cf20922dd618009f4ee9172ac746701f:c7e37061e6486e3f574aae8f110e883
 
 Key as Buffer object (binary)
 ```javascript
-var cipher = require('cipher-js');
+var cipher = require('symmetric-cipher.js');
 
 var key = Buffer.from('3fac1504251a027465981346fb5b0d57d398e4df4a03253a4c7d1926e40e9907', 'hex')
 

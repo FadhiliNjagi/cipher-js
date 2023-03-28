@@ -1,6 +1,6 @@
 {
-  "name": "cipher",
-  "version": "1.0.0",
+  "name": "symmetric-cipher.js",
+  "version": "0.1.0",
   "description": "A lightweight library meant for encrypting and decrypting cookies. Written for express-js",
   "type": "module",
   "main": "./dist/cjs/index.js",
