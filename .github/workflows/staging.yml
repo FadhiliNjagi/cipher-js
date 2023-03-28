@@ -1,0 +1,22 @@
+name: staging
+on:
+  push:
+    branches:
+      - staging
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.x
+          registry-url: https://registry.npmjs.org/
+      - name: Install dependencies
+        run: yarn && yarn install
+      - name: Build
+        run: yarn build
+      - name: Pre-publish
+        run: npm publish --dry-run

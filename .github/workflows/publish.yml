@@ -1,32 +1,42 @@
-name: "build"
-on:
-  # Triggers the workflow on published releases
-  release:
-    types: [published]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
+# name: "build"
+# on:
+#   # On published releases
+#   release:
+#     types: [published]
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+      
+#       - name: Install rq
+#         run: pip install rq
 
-      - name: Checkout
-        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-        uses: actions/checkout@v3
+#       - name: Setup Node
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 14.x
+#           registry-url: https://registry.npmjs.org/
 
-      - name: Setup Node
-        # Setup node environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14.x
-          registry-url: https://registry.npmjs.org/
+#       - name: Install dependencies
+#         run: yarn && yarn install
 
-      - name: Install dependencies
-        run: yarn && yarn install
+#       - name: Build
+#         run: yarn build
 
-      - name: Build
-        run: yarn build
+#       - name: Publish
+#         run: yarn publish
 
-      - name: Publish
-        run: yarn publish
-
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+#         env:
+#           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+#       - name: Read Version from package.json
+#         id: version
+#         run: echo ::set-output name=version::$(node -p "require('./package.json').version")
+      
+#       - name: Create Release Tag
+#         uses: actions/create-release-tag@v1
+#         with:
+#           tag_name: ${{ steps.version.outputs.version }}
+#           token: ${{ secrets.GITHUB_TOKEN }}
