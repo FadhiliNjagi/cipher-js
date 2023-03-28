@@ -2,7 +2,7 @@ name: "build"
 on:
   push:
     branches:
-      - main
+      - staging
 
 jobs:
   build:
@@ -37,7 +37,8 @@ jobs:
         run: echo ::set-output name=version::$(node -p "require('./package.json').version")
       
       - name: Create Release Tag
-        uses: actions/create-release-tag@v1
+        uses: negz/create-tag@v1
         with:
-          tag_name: ${{ steps.version.outputs.version }}
+          version: ${{ steps.version.outputs.version }}
+          message: Release version ${{ steps.version.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
