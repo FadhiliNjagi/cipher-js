@@ -1,14 +1,14 @@
 {
   "name": "symmetric-cipher.js",
   "version": "1.0.0",
-  "description": "A lightweight library meant for encrypting and decrypting cookies. Written for express-js",
+  "description": "A lightweight library meant for encrypting and decrypting strings",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "scripts": {
     "build": "yarn build:esm && yarn build:cjs",
     "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es5",
     "test": "jest test.ts",
     "lint": "eslint *.ts",
     "prepare": "npm run build",
@@ -48,5 +48,8 @@
     "ts-jest": "^29.0.5",
     "typescript": "^4.9.5"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "engines": {
+    "node": ">=6.6.0"
+  }
 }
