@@ -6,7 +6,36 @@
 import crypto from 'crypto'
 
 /**
- * Encrypt a string using AES-256-CBC algorithm
+ * Decodes a string to a Buffer Object. Leaves Buffer objects intact.
+ *
+ * @param key - the encryption key
+ * @param keyEncoding - the encryption key's encoding scheme (default: `utf8`)
+ * @return key
+ * @api public
+ */
+export const decodeKey = (key: string | Buffer, keyEncoding: BufferEncoding = 'utf8'): Buffer => {
+  if (!(key instanceof Buffer)) {
+    key = Buffer.from(key, keyEncoding)
+  }
+  return key
+}
+
+/**
+ * Adjusts keylength. If key is not exactly 256 bytes long, returns sha256 of key
+ *
+ * @param key - the encryption key
+ * @return 256-bit key
+ * @private
+ */
+const adjustKeyLength = (key: Buffer): Buffer => {
+  if (key.byteLength !== 32) {
+    key = crypto.createHash('sha256').update(key).digest()
+  }
+  return key
+}
+
+/**
+ * Encrypts a string using AES-256-CBC algorithm
  *
  * @param plainText - string to encrypt
  * @param key - the encryption key
@@ -15,21 +44,16 @@ import crypto from 'crypto'
  * @api public
  */
 export const encrypt = (plainText: string, key: string | Buffer, keyEncoding: BufferEncoding = 'utf8'): string => {
-  if (!(key instanceof Buffer)) {
-    key = Buffer.from(key, keyEncoding)
-  }
-  // If key is not exactly 256 bytes long, use sha256 of key instead
-  if (key.byteLength !== 32) {
-    key = crypto.createHash('sha256').update(key).digest()
-  }
+  key = decodeKey(key, keyEncoding)
+  key = adjustKeyLength(key)
   const iv = crypto.randomBytes(16)
   const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
-  const encrypted = [iv.toString('hex'), ':', cipher.update(plainText, 'utf8', 'hex'), cipher.final('hex')].join('')
+  const encrypted = [iv.toString('base64'), ':', cipher.update(plainText, 'utf8', 'base64'), cipher.final('base64')].join('')
   return encrypted
 }
 
 /**
- * Decrypt a string using AES-256-CBC algorithm
+ * Decrypts a string using AES-256-CBC algorithm
  *
  * @param cipherText - cipher to decrypt
  * @param key - the encryption key
@@ -40,17 +64,12 @@ export const encrypt = (plainText: string, key: string | Buffer, keyEncoding: Bu
 export const decrypt = (cipherText: string, key: string | Buffer, keyEncoding: BufferEncoding = 'utf8'): string => {
   const textParts = cipherText.split(':')
   if (textParts[0] === undefined || textParts[1] === undefined) {
-    throw new Error('Invalid cipher text format. Expected {32-character-iv}:{cipher-text}')
+    throw new Error('Invalid cipher text format. Expected {24-character-iv}:{cipher-text}')
   }
-  if (!(key instanceof Buffer)) {
-    key = Buffer.from(key, keyEncoding)
-  }
-  // If key is not exactly 256 bytes long, use sha256 of key instead
-  if (key.byteLength !== 32) {
-    key = crypto.createHash('sha256').update(key).digest()
-  }
-  const iv = Buffer.from(textParts[0], 'hex')
-  const encryptedText = Buffer.from(textParts[1], 'hex')
+  key = decodeKey(key, keyEncoding)
+  key = adjustKeyLength(key)
+  const iv = Buffer.from(textParts[0], 'base64')
+  const encryptedText = Buffer.from(textParts[1], 'base64')
   const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv)
   const decrypted = Buffer.concat([decipher.update(encryptedText), decipher.final()])
   return decrypted.toString()
