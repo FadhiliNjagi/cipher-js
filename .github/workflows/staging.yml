@@ -13,11 +13,23 @@ jobs:
         node-version: ['0.10', '0.12', '1.8', '2.5', '3.3', '4.9', '5.12', '6.17', '7.10', '8.17', '9.11', '10.24', '11.15', '12.22', '13.14', '14.20', '15.14', '16.19', '17.9', '18.14', '19.7', 'latest']
 
     steps:
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js ${{ matrix.node-version }}
+        shell: bash -eo pipefail -l {0}
+        run: |
+          nvm install --default ${{ matrix.node-version }}
+          dirname "$(nvm which ${{ matrix.node-version }})" >> "$GITHUB_PATH"
+      
+      - name: Configure npm
+        run: |
+          npm config set loglevel error
+          if [[ "$(npm config get package-lock)" == "true" ]]; then
+            npm config set package-lock false
+          else
+            npm config set shrinkwrap false
+          fi
 
       - name: Install Dependencies
         run: npm install
@@ -26,6 +38,7 @@ jobs:
         run: npm test
 
   publish-dry-run:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
