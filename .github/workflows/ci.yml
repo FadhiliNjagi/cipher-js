@@ -41,10 +41,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: dist
-          key: dist-test-${{ steps.timestamp.outputs.timestamp }} 
-          restore-keys: |
-            dist-test
-            dist-test-
+          key: dist-test-${{ steps.get-timestamp.outputs.timestamp }}
   
   test-dist:
     needs: test-ts
@@ -64,6 +61,7 @@ jobs:
           path: |
             dist
           key: ${{ needs.test-ts.outputs.test-cache }}
+          fail-on-cache-miss: true
       
       - name: Install Node.js ${{ matrix.node-version }}
         shell: bash -eo pipefail -l {0}
