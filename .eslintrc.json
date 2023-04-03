@@ -9,7 +9,7 @@
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module",
-        "project": "./tsconfig.esm.test.json"
+        "project": "./tsconfig.test.json"
     },
     "rules": {
     }

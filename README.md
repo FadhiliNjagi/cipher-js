@@ -17,6 +17,10 @@ Yarn
 yarn add symmetric-cipher.js
 ```
 
+## Compatibility
+This library is a commonJS library compatible with Node >= 0.10.48
+
+
 ## Usage
 ```javascript
 var cipher = require('symmetric-cipher.js');
@@ -32,16 +36,17 @@ cipher.decrypt('rSgTZLgXrFlpAOQkUuTgmQ==:wb/6vFECOGRCSA3DSVLpjw==', 'super secre
 
 ES Modules
 ```javascript
-import { encrypt, decrypt } from 'symmetric-cipher.js';
+import cipher from 'symmetric-cipher.js';
 
 // Encrypt
-encrypt('my value', 'super secret key');
+cipher.encrypt('my value', 'super secret key');
 // rSgTZLgXrFlpAOQkUuTgmQ==:wb/6vFECOGRCSA3DSVLpjw==
 
 // Decrypt
-decrypt('rSgTZLgXrFlpAOQkUuTgmQ==:wb/6vFECOGRCSA3DSVLpjw==', 'super secret key');
+cipher.decrypt('rSgTZLgXrFlpAOQkUuTgmQ==:wb/6vFECOGRCSA3DSVLpjw==', 'super secret key');
 // my value
 ```
+Named imports may also work for Node >= 14.13.0.
 
 ## Security
 The key used for encryption and decryption should be a long, random string. The longer the key, the more secure the encryption. A 32-byte (256-bit) key in this case is sufficient. The key should be stored securely.
@@ -67,7 +72,7 @@ Store the key securely. For Node.js, you can store it in a `.env` file and use [
 
 ## API
 ### **decodeKey(key, keyEncoding)**
-This is a helper function that converts a key to a Buffer object. It leaves Buffer objects intact. It is used internally by the encrypt and decrypt functions.
+This is a helper function that converts a key to a Buffer object (binary). It leaves Buffer objects intact. It is used internally by the encrypt and decrypt functions.
 - `key`: (string | Buffer) The secret used for encryption or decryption. If it is a string, it is converted from the specified encoding to binary.
 - `keyEncoding` (string) The encoding of the key. Default is `utf8`. Others include `base64`, `hex`, `ascii`. For full details see crypto's BufferEncoding.
 ### **encrypt(plainText, key, keyEncoding)**
@@ -101,7 +106,7 @@ Key as Buffer object (binary)
 ```javascript
 var cipher = require('symmetric-cipher.js');
 
-var key = Buffer.from('P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc=', 'base64')
+var key = cipher.decodeKey('P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc=', 'base64')
 
 cipher.encrypt('my value', key)
 

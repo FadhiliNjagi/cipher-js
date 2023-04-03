@@ -2,7 +2,8 @@
 ===
 * Added `decodeKey(key, keyEncoding)`
 * Changed cipher encoding format from hex to base64, to create shorter strings
-* Attempt to fix compatibility with node < 6
+* Added compatibility with node >= 0.10 through buffer-from polyfill
+* Removed esm distribution. Library is now purely commonJS (es5)
 
 1.0.0
 ===

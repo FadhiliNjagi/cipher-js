@@ -1,0 +1,115 @@
+name: ci
+
+on:
+- pull_request
+- push
+
+jobs:
+  test-ts:
+    runs-on: ubuntu-latest
+    outputs:
+      test-cache: dist-test-${{ steps.get-timestamp.outputs.timestamp }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          registry-url: https://registry.npmjs.org/
+      
+      - name: Install dependencies
+        run: yarn && yarn install
+
+      - name: Lint
+        run: yarn lint
+      
+      - name: Test
+        run: yarn test
+      
+      - name: Build for testing
+        run: yarn build:test
+
+      - name: Generate timestamp
+        id: get-timestamp
+        run: |
+          echo "timestamp=$(/bin/date -u +%Y-%m-%d_%H:%M:%S)" >> $GITHUB_OUTPUT
+        shell: bash
+      
+      - name: Cache test build
+        uses: actions/cache/save@v3
+        with:
+          path: dist
+          key: dist-test-{{ steps.timestamp.outputs.timestamp }} 
+          restore-keys: |
+            dist-test
+            dist-test-
+  
+  test-dist:
+    needs: test-ts
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version: ['0.10', '0.12', '1.8', '2.5', '3.3', '4.9', '5.12', '6.17', '7.10', '8.17', '9.11', '10.24', '11.15', '12.22', '13.14', '14.20', '15.14', '16.19', '17.9', '18.14', '19.7']
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Restore test build cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            dist
+          key: ${{ needs.test-ts.outputs.test-cache }}
+      
+      - name: Install Node.js ${{ matrix.node-version }}
+        shell: bash -eo pipefail -l {0}
+        run: |
+          nvm install --default ${{ matrix.node-version }}
+          dirname "$(nvm which ${{ matrix.node-version }})" >> "$GITHUB_PATH"
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Install Node.js version-specific mocha
+        run: |
+          nodev="$(cut -d. -f1 <<< "${{ matrix.node-version }}")"
+          if [[ $nodev -lt 3 ]]; then
+            npm install mocha@3.5.3
+          elif [[ $nodev -lt 6 ]]; then
+            npm install mocha@5.2.0
+          elif [[ $nodev -lt 8 ]]; then
+            npm install mocha@6.2.2
+          elif [[ $nodev -lt 10 ]]; then
+            npm install mocha@7.2.0
+          elif [[ $nodev -lt 12 ]]; then
+            npm install mocha@8.4.0
+          elif [[ $nodev -lt 14 ]]; then
+            npm install mocha@9.2.2
+          else
+            npm install mocha@^10
+          fi
+      
+      - name: Test
+        run: npx mocha dist/test.js
+
+  publish-dry-run:
+    needs: test-dist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.x
+          registry-url: https://registry.npmjs.org/
+      - name: Install dependencies
+        run: yarn && yarn install
+      - name: Pre-publish
+        run: yarn prepublishOnly
+      - name: Publish dry-run
+        run: yarn publish --dry-run
