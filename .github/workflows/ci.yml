@@ -79,6 +79,7 @@ jobs:
             npm install --production --ignore-scripts
           else
             npm install --ignore-scripts --omit=dev
+          fi
       
       - name: Install Node.js version-specific mocha
         run: |
