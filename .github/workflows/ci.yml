@@ -54,11 +54,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - name: Set up Python 2.x
-        uses: actions/setup-python@v2
-        with:
-          python-version: 2.x
 
       - name: Restore test build cache
         uses: actions/cache/restore@v3
