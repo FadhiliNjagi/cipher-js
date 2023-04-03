@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "build:test": "tsc --project tsconfig.test.json",
-    "test": "jest *.ts --coverage",
+    "test": "jest test.ts --coverage",
     "test:dist": "mocha dist/test.js",
     "lint": "eslint *.ts",
     "prepare": "yarn build",
@@ -35,7 +35,8 @@
   },
   "homepage": "https://github.com/FadhiliNjagi/cipher-js#readme",
   "dependencies": {
-    "buffer-from": "^1.1.2"
+    "buffer-from": "^1.1.2",
+    "safer-buffer": "^2.1.2"
   },
   "devDependencies": {
     "@types/buffer-from": "^1.1.0",

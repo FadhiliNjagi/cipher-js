@@ -39,7 +39,7 @@ describe('decrypt(cipherText, key, keyEncoding)', function () {
   })
 
   describe('when key is a buffer', function () {
-    it('should decrypt plain text', function () {
+    it('should decrypt cipher text', function () {
       const plainText = 'foobar'
       const cipher = 'kI7KX7DpxGiQko4k2hPkaQ==:wN39aymkUhx8KVenmijULw=='
       const secret = bufferFrom('P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc=', 'base64')
@@ -55,7 +55,7 @@ describe('encrypt(plainText, key, keyEncoding)', function () {
       const secret = 'super secret key'
       const encrypted = encrypt(plainText, secret)
       assert.notStrictEqual(encrypted, plainText)
-      assert.match(encrypted, /^[A-Za-z0-9+/=]{24}:[A-Za-z0-9+/=]+$/)
+      assert.ok(/^[A-Za-z0-9+/=]{24}:[A-Za-z0-9+/=]+$/.test(encrypted))
       assert.strictEqual(decrypt(encrypted, secret), plainText)
     })
   })

@@ -29,7 +29,7 @@ export const decodeKey = (key: string | Buffer, keyEncoding: BufferEncoding = 'u
  * @private
  */
 const adjustKeyLength = (key: Buffer): Buffer => {
-  if (key.byteLength !== 32) {
+  if (key.length !== 32) {
     key = createHash('sha256').update(key).digest()
   }
   return key
