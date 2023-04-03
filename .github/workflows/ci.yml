@@ -70,7 +70,7 @@ jobs:
           dirname "$(nvm which ${{ matrix.node-version }})" >> "$GITHUB_PATH"
       
       - name: Clear npm cache
-        run: npm clear cache --force
+        run: npm cache clean --force
       
       - name: Install production dependencies
         run: |
