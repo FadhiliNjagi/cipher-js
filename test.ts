@@ -101,7 +101,7 @@ describe('encrypt(plainText, key, keyEncoding)', function () {
       const encryptedWithShortSecret = encrypt(plainText, shortSecret)
       const encryptedWithSha256Secret = encrypt(plainText, sha256Secret)
       // Assert that the keys are interchangeable
-      assert.deepStrictEqual(decrypt(encryptedWithShortSecret, sha256Secret), decrypt(encryptedWithSha256Secret, shortSecret))
+      assert.strictEqual(decrypt(encryptedWithShortSecret, sha256Secret), decrypt(encryptedWithSha256Secret, shortSecret))
     })
   })
 })
