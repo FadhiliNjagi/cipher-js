@@ -72,25 +72,25 @@ jobs:
           dirname "$(nvm which ${{ matrix.node-version }})" >> "$GITHUB_PATH"
       
       - name: Install dependencies
-        run: npm install
+        run: npm install --production
       
       - name: Install Node.js version-specific mocha
         run: |
           nodev="$(cut -d. -f1 <<< "${{ matrix.node-version }}")"
           if [[ $nodev -lt 3 ]]; then
-            npm install mocha@3.5.3
+            npm install --save-dev mocha@3.5.3
           elif [[ $nodev -lt 6 ]]; then
-            npm install mocha@5.2.0
+            npm install --save-dev mocha@5.2.0
           elif [[ $nodev -lt 8 ]]; then
-            npm install mocha@6.2.2
+            npm install --save-dev mocha@6.2.2
           elif [[ $nodev -lt 10 ]]; then
-            npm install mocha@7.2.0
+            npm install --save-dev mocha@7.2.0
           elif [[ $nodev -lt 12 ]]; then
-            npm install mocha@8.4.0
+            npm install --save-dev mocha@8.4.0
           elif [[ $nodev -lt 14 ]]; then
-            npm install mocha@9.2.2
+            npm install --save-dev mocha@9.2.2
           else
-            npm install mocha@^10
+            npm install --save-dev mocha@^10
           fi
       
       - name: Test
