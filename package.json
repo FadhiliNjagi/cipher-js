@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "build:test": "tsc --project tsconfig.test.json",
-    "test": "jest *.ts",
+    "test": "jest *.ts --coverage",
     "test:dist": "mocha dist/test.js",
     "lint": "eslint *.ts",
     "prepare": "yarn build",

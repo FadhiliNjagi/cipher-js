@@ -41,7 +41,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: dist
-          key: dist-test-{{ steps.timestamp.outputs.timestamp }} 
+          key: dist-test-${{ steps.timestamp.outputs.timestamp }} 
           restore-keys: |
             dist-test
             dist-test-
@@ -94,7 +94,7 @@ jobs:
           fi
       
       - name: Test
-        run: npx mocha dist/test.js
+        run: npm run test:dist
 
   publish-dry-run:
     needs: test-dist
