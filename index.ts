@@ -3,7 +3,8 @@
  * Copyright (c) 2023 Fadhili Njagi
  * MIT licensed
 */
-import crypto from 'crypto'
+import { createHash, randomBytes, createCipheriv, createDecipheriv } from 'crypto'
+import bufferFrom from 'buffer-from'
 
 /**
  * Decodes a string to a Buffer Object. Leaves Buffer objects intact.
@@ -15,7 +16,7 @@ import crypto from 'crypto'
  */
 export const decodeKey = (key: string | Buffer, keyEncoding: BufferEncoding = 'utf8'): Buffer => {
   if (!(key instanceof Buffer)) {
-    key = Buffer.from(key, keyEncoding)
+    key = bufferFrom(key, keyEncoding)
   }
   return key
 }
@@ -29,7 +30,7 @@ export const decodeKey = (key: string | Buffer, keyEncoding: BufferEncoding = 'u
  */
 const adjustKeyLength = (key: Buffer): Buffer => {
   if (key.byteLength !== 32) {
-    key = crypto.createHash('sha256').update(key).digest()
+    key = createHash('sha256').update(key).digest()
   }
   return key
 }
@@ -46,8 +47,8 @@ const adjustKeyLength = (key: Buffer): Buffer => {
 export const encrypt = (plainText: string, key: string | Buffer, keyEncoding: BufferEncoding = 'utf8'): string => {
   key = decodeKey(key, keyEncoding)
   key = adjustKeyLength(key)
-  const iv = crypto.randomBytes(16)
-  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
+  const iv = randomBytes(16)
+  const cipher = createCipheriv('aes-256-cbc', key, iv)
   const encrypted = [iv.toString('base64'), ':', cipher.update(plainText, 'utf8', 'base64'), cipher.final('base64')].join('')
   return encrypted
 }
@@ -68,9 +69,9 @@ export const decrypt = (cipherText: string, key: string | Buffer, keyEncoding: B
   }
   key = decodeKey(key, keyEncoding)
   key = adjustKeyLength(key)
-  const iv = Buffer.from(textParts[0], 'base64')
-  const encryptedText = Buffer.from(textParts[1], 'base64')
-  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv)
+  const iv = bufferFrom(textParts[0], 'base64')
+  const encryptedText = bufferFrom(textParts[1], 'base64')
+  const decipher = createDecipheriv('aes-256-cbc', key, iv)
   const decrypted = Buffer.concat([decipher.update(encryptedText), decipher.final()])
   return decrypted.toString()
 }

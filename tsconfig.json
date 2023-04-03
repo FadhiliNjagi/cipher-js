@@ -1,9 +1,11 @@
 {
-  "files": ["index.ts", "test.ts"],
+  "files": ["index.ts"],
   "compilerOptions": {
     "target": "es2015",
     "module": "es2015",
+    "moduleResolution": "node",
     "declaration": true,
+    "declarationMap": true,
     "outDir": "./dist/esm",
     "noEmit": false,
     "strict": true,
@@ -23,10 +25,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
-  },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
+    "skipLibCheck": true,
+    "removeComments": true
   }
 }
