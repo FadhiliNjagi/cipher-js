@@ -69,8 +69,23 @@ jobs:
           nvm install --default ${{ matrix.node-version }}
           dirname "$(nvm which ${{ matrix.node-version }})" >> "$GITHUB_PATH"
       
-      - name: Install dependencies
-        run: npm install --production
+      - name: Configure npm
+        run: |
+          npm config set loglevel error
+          npm clear cache --force
+          if [[ "$(npm config get package-lock)" == "true" ]]; then
+            npm config set package-lock false
+          else
+            npm config set shrinkwrap false
+          fi
+      
+      - name: Install production dependencies
+        run: |
+          nodev="$(cut -d. -f1 <<< "${{ matrix.node-version }}")"
+          if [[ $nodev -lt 15 ]]; then
+            npm install --production --ignore-scripts
+          else
+            npm install --ignore-scripts --omit=dev
       
       - name: Install Node.js version-specific mocha
         run: |

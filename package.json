@@ -35,8 +35,7 @@
   },
   "homepage": "https://github.com/FadhiliNjagi/cipher-js#readme",
   "dependencies": {
-    "buffer-from": "^1.1.2",
-    "safer-buffer": "^2.1.2"
+    "buffer-from": "^1.1.2"
   },
   "devDependencies": {
     "@types/buffer-from": "^1.1.0",
