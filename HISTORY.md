@@ -1,9 +1,15 @@
+2.0.0
+===
+* Test integration with other libraries. So far so good.
+
 2.0.0-dev
 ===
-* Added `decodeKey(key, keyEncoding)`
-* Changed cipher encoding format from hex to base64, to create shorter strings
-* Added compatibility with node >= 0.10 through buffer-from polyfill
-* Removed esm distribution. Library is now purely commonJS (es5)
+* Add `decodeKey(key, keyEncoding)`
+* Change cipher encoding format from hex to base64, to create shorter strings
+* deps: buffer-from@1.1.2
+  - Add compatibility with older node versions (>= 0.10) for `Buffer.from`
+* Remove esm distribution. Library is now purely commonJS (es5)
+* More thorough tests
 
 1.0.0
 ===
