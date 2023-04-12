@@ -1,3 +1,8 @@
+2.1.0-0
+===
+* Add support for keys with encoding prefix e.g. `base64:P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc=`
+* Remove buffer-from dependency
+
 2.0.0
 ===
 * Test integration with other libraries. So far so good.
