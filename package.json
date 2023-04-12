@@ -1,6 +1,6 @@
 {
   "name": "symmetric-cipher.js",
-  "version": "2.0.0",
+  "version": "2.1.0-0",
   "description": "A lightweight library meant for encrypting and decrypting strings",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
