@@ -34,9 +34,7 @@
     "url": "https://github.com/FadhiliNjagi/cipher-js/issues"
   },
   "homepage": "https://github.com/FadhiliNjagi/cipher-js#readme",
-  "dependencies": {
-    "buffer-from": "~1.1.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/buffer-from": "^1.1.0",
     "@types/jest": "^29.5.0",

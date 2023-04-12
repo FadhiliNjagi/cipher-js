@@ -1,6 +1,7 @@
 import assert from 'assert'
 import { encrypt, decrypt, decodeKey } from './index'
-import bufferFrom from 'buffer-from'
+// eslint-disable-next-line n/no-deprecated-api
+const bufferFrom = (typeof Buffer.from === 'function') ? Buffer.from : function (str: string, enc: BufferEncoding) { return new Buffer(str, enc) }
 
 describe('decodeKey = (key, keyEncoding)', function () {
   it('should convert a string key to a buffer', function () {
@@ -8,15 +9,15 @@ describe('decodeKey = (key, keyEncoding)', function () {
     assert.ok(decodeKey(key) instanceof Buffer)
     const base64key = 'P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc='
     assert.ok(decodeKey(base64key, 'base64') instanceof Buffer)
+    assert.ok(decodeKey(`base64:${base64key}`) instanceof Buffer)
     const hexKey = '3fac1504251a027465981346fb5b0d57d398e4df4a03253a4c7d1926e40e9907'
     assert.ok(decodeKey(hexKey, 'hex') instanceof Buffer)
+    assert.ok(decodeKey(`hex:${hexKey}`) instanceof Buffer)
   })
 
   it('should leave a buffer key intact', function () {
     const key = bufferFrom('super secret key', 'utf8')
     assert.strictEqual(decodeKey(key), key)
-    const base64key = 'P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc='
-    assert.ok(decodeKey(base64key, 'base64') instanceof Buffer)
   })
 })
 
@@ -43,6 +44,15 @@ describe('decrypt(cipherText, key, keyEncoding)', function () {
       const plainText = 'foobar'
       const cipher = 'kI7KX7DpxGiQko4k2hPkaQ==:wN39aymkUhx8KVenmijULw=='
       const secret = bufferFrom('P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc=', 'base64')
+      assert.strictEqual(decrypt(cipher, secret), plainText)
+    })
+  })
+
+  describe('when key encoding is specified as prefix', function () {
+    it('should decrypt cipher text', function () {
+      const plainText = 'foobar'
+      const cipher = 'kI7KX7DpxGiQko4k2hPkaQ==:wN39aymkUhx8KVenmijULw=='
+      const secret = 'base64:P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc='
       assert.strictEqual(decrypt(cipher, secret), plainText)
     })
   })
@@ -87,6 +97,21 @@ describe('encrypt(plainText, key, keyEncoding)', function () {
       assert.strictEqual(decrypt(encrypted, secretBuffer), plainText)
 
       secretBuffer = bufferFrom('P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc=', 'base64')
+      encrypted = encrypt(plainText, secretBuffer)
+      assert.notStrictEqual(encrypted, plainText)
+      assert.strictEqual(decrypt(encrypted, secretBuffer), plainText)
+    })
+  })
+
+  describe('when key encoding is specified as prefix', function () {
+    it('should encrypt plain text', function () {
+      const plainText = 'foobar'
+      let secretBuffer = 'hex:3fac1504251a027465981346fb5b0d57d398e4df4a03253a4c7d1926e40e9907'
+      let encrypted = encrypt(plainText, secretBuffer)
+      assert.notStrictEqual(encrypted, plainText)
+      assert.strictEqual(decrypt(encrypted, secretBuffer), plainText)
+
+      secretBuffer = 'base64:P6wVBCUaAnRlmBNG+1sNV9OY5N9KAyU6TH0ZJuQOmQc='
       encrypted = encrypt(plainText, secretBuffer)
       assert.notStrictEqual(encrypted, plainText)
       assert.strictEqual(decrypt(encrypted, secretBuffer), plainText)

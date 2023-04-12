@@ -26,6 +26,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "removeComments": true
+    "removeComments": false
   }
 }

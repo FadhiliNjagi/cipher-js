@@ -4,7 +4,8 @@
  * MIT licensed
 */
 import { createHash, randomBytes, createCipheriv, createDecipheriv } from 'crypto'
-import bufferFrom from 'buffer-from'
+// eslint-disable-next-line n/no-deprecated-api
+const bufferFrom = (typeof Buffer.from === 'function') ? Buffer.from : function (str: string, enc: BufferEncoding) { return new Buffer(str, enc) }
 
 /**
  * Decodes a string to a Buffer Object. Leaves Buffer objects intact.
@@ -16,6 +17,13 @@ import bufferFrom from 'buffer-from'
  */
 export const decodeKey = (key: string | Buffer, keyEncoding: BufferEncoding = 'utf8'): Buffer => {
   if (!(key instanceof Buffer)) {
+    const keyParts = key.split(':')
+    if (keyParts[0] !== undefined && keyParts[1] !== undefined) {
+      if (Buffer.isEncoding(keyParts[0])) {
+        keyEncoding = keyParts[0]
+        key = keyParts[1]
+      }
+    }
     key = bufferFrom(key, keyEncoding)
   }
   return key
